@@ -111,7 +111,7 @@ function renderTransactions() {
 
     if (!transactionListItems || transactionListItems.length === 0) {
         if (emptyStateEl) {
-            emptyStateEl.classList.remove('d-none')  
+            emptyStateEl.classList.remove('d-none')
             tableList.classList.add('d-none')
             return;
         }
@@ -179,11 +179,14 @@ function clearAllTransactions() {
 }
 
 function searchBtnItems() {
-    transactionListItems.forEach((item, idx) => {
+    transactionListItems.forEach((item) => {
         const inputSearchElem = document.querySelector('#inputSearchElem')
-        // if (inputSearchElem.value === item.description) {
-        
+        // if (inputSearchElem.value === (item.description || item.amountPrice)) {
+
         // } 
+        console.log(item.amountPrice);
+
+        console.log(item.description);
 
 
 
