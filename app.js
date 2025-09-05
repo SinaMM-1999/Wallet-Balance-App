@@ -62,7 +62,7 @@ function addTransactionToList(e) {
   const type = normalizeType(typeRaw);
 
   if (!description || Number.isNaN(amountPrice)) {
-    showAlert('لطفاً توضیح و مبلغ را کامل وارد کنید.', 'danger', 3000);
+    showAlert('Please Enter valid desc & price !!', 'danger', 3000);
     return;
   }
 
@@ -157,7 +157,7 @@ function renderTotalPrice() {
 
 // پاک‌کردن همه تراکنش‌ها
 function clearAllTransactions() {
-  if (!confirm('آیا مطمئنی همه تراکنش‌ها پاک شوند؟')) return;
+  if (!confirm('Would you like CLEAR all Transactions ???')) return;
   transactionListItems = [];
   saveToLocalStorage();
   renderTransactions();
