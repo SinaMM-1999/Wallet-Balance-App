@@ -45,7 +45,6 @@ function showAlert(message = '', type = 'danger', duration = 3000) {
     // type: 'danger' یا 'success'
     alertDismissible.classList.remove('d-none', 'alert-danger', 'alert-success');
     alertDismissible.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
-    alertDismissible.innerText = message;
     setTimeout(() => {
         alertDismissible.classList.add('d-none');
     }, duration);
@@ -182,9 +181,9 @@ function clearAllTransactions() {
 function searchBtnItems() {
     transactionListItems.forEach((item, idx) => {
         const inputSearchElem = document.querySelector('#inputSearchElem')
-        if (inputSearchElem.value === item.description) {
-            
-        } 
+        // if (inputSearchElem.value === item.description) {
+        
+        // } 
 
 
 

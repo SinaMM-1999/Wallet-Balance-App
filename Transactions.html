@@ -63,15 +63,58 @@
                 <div class="text-info mb-4 mt-4 text-center lead">List Of Transactions (This Month)</div>
                 <div class="input-group p-3">
                     <input type="text" id="inputSearchElem" class="form-control border border-info bg-dark text-light"
-                    placeholder="Enter Transaction">
-                    <button class="btn btn-outline-info ms-1" id="searchBtn">search</button>
+                        placeholder="Enter Transaction">
+
+                    <!-- btn-Search-Modal -->
+                    <button class="btn btn-outline-info ms-1" type="button" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop" id="searchBtn">search</button>
+
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content border border-info bg-dark text-light">
+                                <div class="modal-header border border-info">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Search result</h1>
+                                    <button type="button" class="btn-close bg-info" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <div class="custom-scroll rounded-3"
+                                        style="max-height: 300px; overflow-y: scroll; overflow-x: hidden;"
+                                        id="modalTableList">
+                                        <table class="table table-secondary border border-info">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th scope="col" class="text-info">Num</th>
+                                                    <th scope="col" class="text-info">Amount</th>
+                                                    <th scope="col" class="text-info">Desc</th>
+                                                    <th scope="col" class="text-info">ِDate</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="modalTransactionBody" class="text-center">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer border-0">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-outline-info">Understood</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- btn-Search-Modal -->
+
                     <button class="btn btn-outline-danger ms-1" id="clearAllBtn">Clear all</button>
                 </div>
-                
+
                 <!-- transactionList -->
                 <div class="bg-dark text-light text-center p-5 mt-5 fs-5 d-none" id="emptyState">You Have No Transaction
                     Yet !</div>
-                    <div class="custom-scroll rounded-3" style="max-height: 300px; overflow-y: scroll; overflow-x: hidden;"
+                <div class="custom-scroll rounded-3" style="max-height: 300px; overflow-y: scroll; overflow-x: hidden;"
                     id="tableList">
                     <table class="table table-secondary border border-info">
                         <thead>
@@ -83,13 +126,13 @@
                             </tr>
                         </thead>
                         <tbody id="transactionBody" class="text-center">
-                            
-                            
+
+
                         </tbody>
                     </table>
                 </div>
                 <!-- transactionList -->
-                
+
             </div>
 
             <!-- Chart -->
