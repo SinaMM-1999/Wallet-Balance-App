@@ -122,9 +122,9 @@ function renderTransactions() {
 
     row.innerHTML = `
       <th scope="row">${idx + 1}</th>
-      <td>${item.date}</td>
       <td>${item.amountPrice}</td>
-      <td>${escapeHtml(item.description)}</td>
+      <td>${item.description}</td>
+      <td>${escapeHtml(item.date)}</td>
     `;
 
     transactionBody.appendChild(row);
