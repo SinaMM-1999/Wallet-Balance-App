@@ -149,7 +149,7 @@ function renderTotalPrice() {
     if (incomePriceEl) incomePriceEl.textContent = totalIncome;
     if (expensePriceEl) expensePriceEl.textContent = totalExpense;
 
-    renderPieChart(totalIncome, totalExpense);
+    renderPieChart(totalIncome, totalExpense)
 }
 // Clear All Transactions
 function clearAllTransactions() {
@@ -219,7 +219,6 @@ function renderPieChart(income, expense) {
     const ctx = document.getElementById('myChart')?.getContext('2d');
     if (!ctx) return;
 
-    // اگه قبلاً نمودار ساخته شده، نابودش کن تا دوباره بسازیم
     if (chartInstance) {
         chartInstance.destroy();
     }
