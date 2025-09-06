@@ -1,4 +1,4 @@
-// app.js (اصلاح‌شده)
+// app.js (بازنویسی کامل بر اساس کدهای خودت)
 // ————————————————————————————
 // خواندن اولیه از localStorage
 let transactionListItems = JSON.parse(localStorage.getItem('transactions') || '[]');
@@ -9,40 +9,38 @@ const transactionsBtn = document.querySelector('#transaction');
 const addTransactionBtn = document.getElementById('addTransactionBtn');
 const transactionBody = document.getElementById('transactionBody');
 const alertDismissible = document.querySelector('.alert-dismissible');
-const totalBalanceEl = document.querySelector('#total-balance'); // span یا div در index.html
-const incomePriceEl = document.getElementById('incomePrice'); // اگر در HTML موجود باشه
-const expensePriceEl = document.getElementById('expensePrice'); // در index.html احتمالاً همین id هست
+const totalBalanceEl = document.querySelector('#total-balance');
+const incomePriceEl = document.getElementById('incomePrice');
+const expensePriceEl = document.getElementById('expensePrice');
 const emptyStateEl = document.getElementById('emptyState');
 const clearAllBtn = document.getElementById('clearAllBtn');
-const todayDate = document.querySelector('#today-date')
-const searchBtn = document.querySelector('#searchBtn')
-const tableList = document.querySelector('#tableList')
+const searchBtn = document.querySelector('#searchBtn');
+const todayDate = document.querySelector('#today-date');
+const tableList = document.querySelector('#tableList');
+const modalTransactionBody = document.getElementById('modalTransactionBody');
 
+// نمایش تاریخ امروز
 function updateDateEveryDay() {
-    if (!todayDate) return; // 👈 اگه نبود، هیچی انجام نده
-    let now = new Date()
-    let showNewDate = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`
-    todayDate.innerHTML = `${showNewDate}`
+    if (!todayDate) return;
+    let now = new Date();
+    let showNewDate = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
+    todayDate.innerHTML = `${showNewDate}`;
 }
+updateDateEveryDay();
 
-updateDateEveryDay()
+// ناوبری
+if (homeBtn) homeBtn.addEventListener('click', () => { window.location.href = 'index.html'; });
+if (transactionsBtn) transactionsBtn.addEventListener('click', () => { window.location.href = 'Transactions.html'; });
 
-// ناوبری (اگر وجود داشتند)
-if (homeBtn) {
-    homeBtn.addEventListener('click', () => { window.location.href = 'index.html'; });
-}
-if (transactionsBtn) {
-    transactionsBtn.addEventListener('click', () => { window.location.href = 'Transactions.html'; });
-}
-
-// کمک‌کننده‌ها
+// ذخیره در localStorage
 function saveToLocalStorage() {
     localStorage.setItem('transactions', JSON.stringify(transactionListItems));
 }
 
+// نمایش هشدار
 function showAlert(message = '', type = 'danger', duration = 3000) {
     if (!alertDismissible) return;
-    // type: 'danger' یا 'success'
+    alertDismissible.textContent = message;
     alertDismissible.classList.remove('d-none', 'alert-danger', 'alert-success');
     alertDismissible.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
     setTimeout(() => {
@@ -50,13 +48,13 @@ function showAlert(message = '', type = 'danger', duration = 3000) {
     }, duration);
 }
 
-// نرمالایز نوع تراکنش (برای پوشش Income / income / Expence / expense / ... )
+// نرمالایز نوع تراکنش
 function normalizeType(raw) {
     if (!raw) return 'expense';
     const s = String(raw).trim().toLowerCase();
     if (s.includes('inc')) return 'income';
     if (s.includes('exp')) return 'expense';
-    return s; // fallback
+    return s;
 }
 
 // افزودن تراکنش
@@ -90,10 +88,7 @@ function addTransactionToList(e) {
 
     renderTransactions();
     renderTotalPrice();
-
-    // پیام موفقیت
     showAlert('Transaction added successfully :)', 'success', 2000);
-
     clearInput();
 }
 
@@ -106,40 +101,34 @@ function clearInput() {
 
 // رندر جدول تراکنش‌ها
 function renderTransactions() {
-    if (!transactionBody) return;
-    transactionBody.innerHTML = '';
+    if (transactionBody) transactionBody.innerHTML = '';
+    if (modalTransactionBody) modalTransactionBody.innerHTML = '';
 
     if (!transactionListItems || transactionListItems.length === 0) {
         if (emptyStateEl) {
-            emptyStateEl.classList.remove('d-none')
-            tableList.classList.add('d-none')
+            emptyStateEl.classList.remove('d-none');
+            if (tableList) tableList.classList.add('d-none');
             return;
         }
     } else {
         if (emptyStateEl) emptyStateEl.classList.add('d-none');
+        if (tableList) tableList.classList.remove('d-none');
     }
 
     transactionListItems.forEach((item, idx) => {
         const row = document.createElement('tr');
-
-        // رنگ سفارشی (سبز برای income، قرمز برای expense)
-        if (item.type === 'income') {
-            row.classList.add('table-success')
-        } else if (item.type === 'expense') {
-            row.classList.add('table-danger')
-        } else {
-            row.style.backgroundColor = 'transparent';
-            row.style.color = 'inherit';
-        }
+        if (item.type === 'income') row.classList.add('table-success');
+        else if (item.type === 'expense') row.classList.add('table-danger');
 
         row.innerHTML = `
-      <th scope="row">${idx + 1}</th>
-      <td>${item.amountPrice}</td>
-      <td>${item.description}</td>
-      <td>${escapeHtml(item.date)}</td>
-    `;
+            <th scope="row">${idx + 1}</th>
+            <td>${item.amountPrice}</td>
+            <td>${item.description}</td>
+            <td>${escapeHtml(item.date)}</td>
+        `;
 
-        transactionBody.appendChild(row);
+        if (transactionBody) transactionBody.appendChild(row);
+        if (modalTransactionBody) modalTransactionBody.appendChild(row.cloneNode(true));
     });
 }
 
@@ -158,11 +147,7 @@ function renderTotalPrice() {
     });
 
     const balance = totalIncome - totalExpense;
-
-    // اگر یک span ساده داری، مقدار را داخلش قرار بده
     totalBalanceEl.textContent = balance;
-
-    // اگر spanهای جدا برای income/expense وجود دارند، پرشان کن
     if (incomePriceEl) incomePriceEl.textContent = totalIncome;
     if (expensePriceEl) expensePriceEl.textContent = totalExpense;
 }
@@ -178,23 +163,36 @@ function clearAllTransactions() {
     showAlert('All transactions cleared.', 'success', 1500);
 }
 
+// سرچ و نمایش در مودال
 function searchBtnItems() {
-    transactionListItems.forEach((item) => {
-        const inputSearchElem = document.querySelector('#inputSearchElem')
-        // if (inputSearchElem.value === (item.description || item.amountPrice)) {
+    if (!modalTransactionBody) return;
+    modalTransactionBody.innerHTML = '';
 
-        // } 
-        console.log(item.amountPrice);
+    const inputSearchElem = document.querySelector('#inputSearchElem');
+    const query = (inputSearchElem?.value || '').toLowerCase().trim();
+    if (!query) return;
 
-        console.log(item.description);
+    const filtered = transactionListItems.filter(
+        (item) => item.description.toLowerCase().includes(query) || String(item.amountPrice).includes(query)
+    );
 
+    filtered.forEach((item, idx) => {
+        const row = document.createElement('tr');
+        if (item.type === 'income') row.classList.add('table-success');
+        else if (item.type === 'expense') row.classList.add('table-danger');
 
+        row.innerHTML = `
+            <th scope="row">${idx + 1}</th>
+            <td>${item.amountPrice}</td>
+            <td>${item.description}</td>
+            <td>${escapeHtml(item.date)}</td>
+        `;
 
-    })
+        modalTransactionBody.appendChild(row);
+    });
 }
 
-searchBtnItems()
-// محافظت از محتوای ورودی در نمایش (اختیاری)
+// escape html
 function escapeHtml(str) {
     if (!str) return '';
     return String(str)
@@ -205,22 +203,12 @@ function escapeHtml(str) {
         .replaceAll("'", '&#39;');
 }
 
-// هندل کردن clearAllBtn (در صورتی که وجود داشته باشد)
-if (clearAllBtn) {
-    clearAllBtn.addEventListener('click', clearAllTransactions);
-}
-if (searchBtn) {
-    searchBtn.addEventListener('click', searchBtnItems);
-}
+// لیسنرها
+if (clearAllBtn) clearAllBtn.addEventListener('click', clearAllTransactions);
+if (searchBtn) searchBtn.addEventListener('click', searchBtnItems);
+if (addTransactionBtn) addTransactionBtn.addEventListener('click', addTransactionToList);
 
-// هنگام لود صفحه
 document.addEventListener('DOMContentLoaded', () => {
-    // رندر اولیه
     renderTransactions();
     renderTotalPrice();
-
-    // بایند دکمه افزودن اگر وجود داشته باشد
-    if (addTransactionBtn) {
-        addTransactionBtn.addEventListener('click', addTransactionToList);
-    }
 });
