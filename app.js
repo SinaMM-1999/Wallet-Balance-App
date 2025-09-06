@@ -40,7 +40,6 @@ function saveToLocalStorage() {
 // نمایش هشدار
 function showAlert(message = '', type = 'danger', duration = 3000) {
     if (!alertDismissible) return;
-    alertDismissible.textContent = message;
     alertDismissible.classList.remove('d-none', 'alert-danger', 'alert-success');
     alertDismissible.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
     setTimeout(() => {
