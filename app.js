@@ -1,14 +1,12 @@
-// app.js (بازنویسی کامل بر اساس کدهای خودت)
-// ————————————————————————————
-// خواندن اولیه از localStorage
+// Read Data From LocalStorage
 let transactionListItems = JSON.parse(localStorage.getItem('transactions') || '[]');
 
-// المنت‌ها (ممکنه توی بعضی صفحه‌ها وجود نداشته باشن)
 const homeBtn = document.querySelector('#home');
 const transactionsBtn = document.querySelector('#transaction');
 const addTransactionBtn = document.getElementById('addTransactionBtn');
 const transactionBody = document.getElementById('transactionBody');
 const alertDismissible = document.querySelector('.alert-dismissible');
+const areltMassage = document.querySelector('#alertmassage')
 const totalBalanceEl = document.querySelector('#total-balance');
 const incomePriceEl = document.getElementById('incomePrice');
 const expensePriceEl = document.getElementById('expensePrice');
@@ -19,7 +17,7 @@ const todayDate = document.querySelector('#today-date');
 const tableList = document.querySelector('#tableList');
 const modalTransactionBody = document.getElementById('modalTransactionBody');
 
-// نمایش تاریخ امروز
+// Showing ToDay Date
 function updateDateEveryDay() {
     if (!todayDate) return;
     let now = new Date();
@@ -28,18 +26,19 @@ function updateDateEveryDay() {
 }
 updateDateEveryDay();
 
-// ناوبری
+// Nav Links
 if (homeBtn) homeBtn.addEventListener('click', () => { window.location.href = 'index.html'; });
 if (transactionsBtn) transactionsBtn.addEventListener('click', () => { window.location.href = 'Transactions.html'; });
 
-// ذخیره در localStorage
+// Saving To LocalStorage
 function saveToLocalStorage() {
     localStorage.setItem('transactions', JSON.stringify(transactionListItems));
 }
 
-// نمایش هشدار
+// Show Alarm
 function showAlert(message = '', type = 'danger', duration = 3000) {
     if (!alertDismissible) return;
+    areltMassage.innerHTML = message
     alertDismissible.classList.remove('d-none', 'alert-danger', 'alert-success');
     alertDismissible.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
     setTimeout(() => {
@@ -47,7 +46,7 @@ function showAlert(message = '', type = 'danger', duration = 3000) {
     }, duration);
 }
 
-// نرمالایز نوع تراکنش
+// Normalize Transactions
 function normalizeType(raw) {
     if (!raw) return 'expense';
     const s = String(raw).trim().toLowerCase();
@@ -56,7 +55,7 @@ function normalizeType(raw) {
     return s;
 }
 
-// افزودن تراکنش
+// Add Transactions
 function addTransactionToList(e) {
     e?.preventDefault?.();
 
@@ -98,7 +97,7 @@ function clearInput() {
     if (amountEl) amountEl.value = '';
 }
 
-// رندر جدول تراکنش‌ها
+// Render Transactions
 function renderTransactions() {
     if (transactionBody) transactionBody.innerHTML = '';
     if (modalTransactionBody) modalTransactionBody.innerHTML = '';
@@ -131,7 +130,7 @@ function renderTransactions() {
     });
 }
 
-// محاسبه و نمایش مجموع‌ها
+// Calculating & show Price / Balance 
 function renderTotalPrice() {
     if (!totalBalanceEl) return;
 
@@ -149,9 +148,10 @@ function renderTotalPrice() {
     totalBalanceEl.textContent = balance;
     if (incomePriceEl) incomePriceEl.textContent = totalIncome;
     if (expensePriceEl) expensePriceEl.textContent = totalExpense;
-}
 
-// پاک‌کردن همه تراکنش‌ها
+    renderPieChart(totalIncome, totalExpense);
+}
+// Clear All Transactions
 function clearAllTransactions() {
     if (!confirm('Would you like CLEAR all Transactions ???')) return;
     transactionListItems = [];
@@ -162,7 +162,7 @@ function clearAllTransactions() {
     showAlert('All transactions cleared.', 'success', 1500);
 }
 
-// سرچ و نمایش در مودال
+// Search & Show Modal
 function searchBtnItems() {
     if (!modalTransactionBody) return;
     modalTransactionBody.innerHTML = '';
@@ -191,7 +191,7 @@ function searchBtnItems() {
     });
 }
 
-// escape html
+// escape html (اختیاری)
 function escapeHtml(str) {
     if (!str) return '';
     return String(str)
@@ -202,7 +202,7 @@ function escapeHtml(str) {
         .replaceAll("'", '&#39;');
 }
 
-// لیسنرها
+// EventListeners
 if (clearAllBtn) clearAllBtn.addEventListener('click', clearAllTransactions);
 if (searchBtn) searchBtn.addEventListener('click', searchBtnItems);
 if (addTransactionBtn) addTransactionBtn.addEventListener('click', addTransactionToList);
@@ -211,3 +211,36 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTransactions();
     renderTotalPrice();
 });
+
+// PIE CHART -------------------------------------
+let chartInstance = null; // برای جلوگیری از ساخت چندباره
+
+function renderPieChart(income, expense) {
+    const ctx = document.getElementById('myChart')?.getContext('2d');
+    if (!ctx) return;
+
+    // اگه قبلاً نمودار ساخته شده، نابودش کن تا دوباره بسازیم
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    chartInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['درآمد', 'هزینه'],
+            datasets: [{
+                data: [income, expense],
+                backgroundColor: ['#00b894', '#d63031'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                }
+            }
+        }
+    });
+}
