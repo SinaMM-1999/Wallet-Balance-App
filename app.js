@@ -149,7 +149,6 @@ function renderTotalPrice() {
     if (incomePriceEl) incomePriceEl.textContent = totalIncome;
     if (expensePriceEl) expensePriceEl.textContent = totalExpense;
 
-    renderPieChart(totalIncome, totalExpense)
 }
 // Clear All Transactions
 function clearAllTransactions() {
@@ -212,34 +211,3 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTotalPrice();
 });
 
-// PIE CHART -------------------------------------
-let chartInstance = null; // برای جلوگیری از ساخت چندباره
-
-function renderPieChart(income, expense) {
-    const ctx = document.getElementById('myChart')?.getContext('2d');
-    if (!ctx) return;
-
-    if (chartInstance) {
-        chartInstance.destroy();
-    }
-
-    chartInstance = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: ['درآمد', 'هزینه'],
-            datasets: [{
-                data: [income, expense],
-                backgroundColor: ['#00b894', '#d63031'],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                }
-            }
-        }
-    });
-}
