@@ -188,6 +188,7 @@ function searchBtnItems() {
 
         modalTransactionBody.appendChild(row);
     });
+    inputSearchElem.innerHTML = ''
 }
 
 // escape html (اختیاری)
